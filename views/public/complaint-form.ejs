@@ -1,0 +1,291 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit Feedback</title>
+  </head>
+  <body>
+    <h2>Submit a Complaint</h2>
+    <form action="/submit" method="POST" enctype="multipart/form-data">
+      <label>Name:*</label>
+      <input type="text" name="name" required/><br><br>
+
+      <label>Gender:</label>
+      <select name="gender_id">
+        <option value="">-- Select --</option>
+        <% genders.forEach(g => { %>
+        <option value="<%= g.id %>"><%= g.name %></option>
+        <% }) %>
+      </select><br><br>
+
+      <label>Age:</label>
+      <input type="number" name="age" /><br><br>
+
+      <label>Phone:*</label>
+      <input type="text" name="phone" required /><br><br>
+
+      <label>Email:</label>
+      <input type="email" name="email" /><br><br>
+
+      <label>Governorate:*</label>
+      <select name="governorate_id" id="governorate" required>
+        <option value="">-- Select --</option>
+        <% governorates.forEach(g => { %>
+        <option value="<%= g.id %>"><%= g.name %></option>
+        <% }) %>
+      </select><br><br>
+
+      <label>District:*</label>
+      <select name="district_id" id="district" required>
+        <option value="">-- Select --</option>
+      </select><br><br>
+
+      <label>Sub-District:*</label>
+      <select name="sub_district_id" id="subDistrict" required>
+        <option value="">-- Select --</option>
+      </select><br><br>
+
+      <label>Community:*</label>
+      <select name="community_id" id="community" required>
+        <option value="">-- Select --</option>
+      </select><br><br>
+
+      <label>Village / Camp / Facility:</label>
+      <input type="text" name="village_camp_facility" /><br><br>
+
+      <label>Project:</label>
+      <select name="project_id">
+        <option value="">-- Select --</option>
+        <% projects.forEach(p => { %>
+        <option value="<%= p.id %>"><%= p.title %></option>
+        <% }) %>
+      </select><br><br>
+
+      <label>Channel:*</label>
+      <select name="channel_id">
+        <option value="">-- Select --</option>
+        <% channels.forEach(c => { %>
+        <option value="<%= c.id %>"><%= c.name %></option>
+        <% }) %>
+      </select><br><br>
+
+      <label>Activity:</label>
+      <input type="text" name="activity" /><br><br>
+
+      <label>Complaint:*</label>
+      <textarea name="complaint" required></textarea><br><br>
+
+      <label>Attachment:</label>
+      <input type="file" name="attachment" /><br><br>
+
+      <button type="submit">Submit Complaint</button>
+    </form>
+  </body>
+  <script>
+    document
+      .getElementById("governorate")
+      .addEventListener("change", async function () {
+        const res = await fetch(`/api/districts/${this.value}`);
+        const districts = await res.json();
+        const districtSelect = document.getElementById("district");
+        districtSelect.innerHTML = '<option value="">-- Select --</option>';
+        districts.forEach((d) => {
+          districtSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+        });
+        // Clear sub-district and community
+        document.getElementById("subDistrict").innerHTML =
+          '<option value="">-- Select --</option>';
+        document.getElementById("community").innerHTML =
+          '<option value="">-- Select --</option>';
+      });
+
+    document
+      .getElementById("district")
+      .addEventListener("change", async function () {
+        const res = await fetch(`/api/sub-districts/${this.value}`);
+        const subDistricts = await res.json();
+        const subDistrictSelect = document.getElementById("subDistrict");
+        subDistrictSelect.innerHTML = '<option value="">-- Select --</option>';
+        subDistricts.forEach((s) => {
+          subDistrictSelect.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+        });
+        document.getElementById("community").innerHTML =
+          '<option value="">-- Select --</option>';
+      });
+
+    document
+      .getElementById("subDistrict")
+      .addEventListener("change", async function () {
+        const res = await fetch(`/api/communities/${this.value}`);
+        const communities = await res.json();
+        const communitySelect = document.getElementById("community");
+        communitySelect.innerHTML = '<option value="">-- Select --</option>';
+        communities.forEach((c) => {
+          communitySelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+        });
+      });
+  </script>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit Feedback</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container py-5 px-4" style="max-width: 800px;">
+  <h2 class="mb-4 text-center">Submit a Complaint</h2>
+  <form action="/submit" method="POST" enctype="multipart/form-data">
+
+    <div class="row g-3">
+      <h3>Participant Information</h3>
+      <hr class="mb-4" />
+      <!-- Row 1: Name + Gender -->
+      <div class="col-md-6">
+        <label class="form-label">Name:*</label>
+        <input type="text" name="name" class="form-control" required />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Gender:</label>
+        <select name="gender_id" class="form-select">
+          <option value="">-- Select --</option>
+          <% genders.forEach(g => { %>
+          <option value="<%= g.id %>"><%= g.name %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <!-- Row 2: Age + Phone -->
+      <div class="col-md-6">
+        <label class="form-label">Age:</label>
+        <input type="number" name="age" class="form-control" />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Phone:*</label>
+        <input type="text" name="phone" class="form-control" required />
+      </div>
+
+      <!-- Row 3: Email -->
+      <div class="col-md-6">
+        <label class="form-label">Email:</label>
+        <input type="email" name="email" class="form-control" />
+      </div>
+
+      <h3>Location</h3>
+      <hr class="mb-4" />
+      <!-- Row 4: Governorate + District -->
+      <div class="col-md-6">
+        <label class="form-label">Governorate:*</label>
+        <select name="governorate_id" id="governorate" class="form-select" required>
+          <option value="">-- Select --</option>
+          <% governorates.forEach(g => { %>
+          <option value="<%= g.id %>"><%= g.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">District:*</label>
+        <select name="district_id" id="district" class="form-select" required>
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+
+      <!-- Row 5: Sub-District + Community -->
+      <div class="col-md-6">
+        <label class="form-label">Sub-District:*</label>
+        <select name="sub_district_id" id="subDistrict" class="form-select" required>
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Community:*</label>
+        <select name="community_id" id="community" class="form-select" required>
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+
+      <!-- Row 6: Village -->
+      <div class="col-md-6">
+        <label class="form-label">Village / Camp / Facility:</label>
+        <input type="text" name="village_camp_facility" class="form-control" />
+      </div>
+
+
+      <!-- Row 7: Activity -->
+      <div class="col-md-12">
+        <label class="form-label">Activity:</label>
+        <input type="text" name="activity" class="form-control" />
+      </div>
+
+      <!-- Row 8: Complaint + Attachment -->
+      <div class="col-md-12">
+        <label class="form-label">Complaint:*</label>
+        <textarea name="complaint" class="form-control" rows="4" required></textarea>
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">Attachment:</label>
+        <input type="file" name="attachment" class="form-control" />
+      </div>
+
+      <!-- Submit Button -->
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Submit Complaint</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document
+      .getElementById("governorate")
+      .addEventListener("change", async function () {
+        const res = await fetch(`/api/districts/${this.value}`);
+        const districts = await res.json();
+        const districtSelect = document.getElementById("district");
+        districtSelect.innerHTML = '<option value="">-- Select --</option>';
+        districts.forEach((d) => {
+          districtSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+        });
+        // Clear sub-district and community
+        document.getElementById("subDistrict").innerHTML =
+          '<option value="">-- Select --</option>';
+        document.getElementById("community").innerHTML =
+          '<option value="">-- Select --</option>';
+      });
+
+    document
+      .getElementById("district")
+      .addEventListener("change", async function () {
+        const res = await fetch(`/api/sub-districts/${this.value}`);
+        const subDistricts = await res.json();
+        const subDistrictSelect = document.getElementById("subDistrict");
+        subDistrictSelect.innerHTML = '<option value="">-- Select --</option>';
+        subDistricts.forEach((s) => {
+          subDistrictSelect.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+        });
+        document.getElementById("community").innerHTML =
+          '<option value="">-- Select --</option>';
+      });
+
+    document
+      .getElementById("subDistrict")
+      .addEventListener("change", async function () {
+        const res = await fetch(`/api/communities/${this.value}`);
+        const communities = await res.json();
+        const communitySelect = document.getElementById("community");
+        communitySelect.innerHTML = '<option value="">-- Select --</option>';
+        communities.forEach((c) => {
+          communitySelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+        });
+      });
+  </script>
+</body>
+</html>

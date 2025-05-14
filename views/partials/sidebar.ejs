@@ -1,0 +1,65 @@
+<!-- Main Wrapper -->
+<div class="d-flex">
+  <!-- Sidebar -->
+  <div
+    class="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white position-fixed"
+    style="width: 250px; height: 100vh"
+  >
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="d-flex align-items-center">
+        <i class="bx bxl-codepen fs-4 me-2"></i>
+        <span class="fs-5 fw-bold">A.Krayem</span>
+      </div>
+      <i class="bx bx-menu fs-4" id="btn" style="cursor: pointer"></i>
+    </div>
+
+    <!-- User Info -->
+    <div class="d-flex align-items-center mb-4">
+      <a href="/profile">
+        <img
+          src="/src/images.jpg"
+          alt="user"
+          class="rounded-circle me-3"
+          width="50"
+          height="50"
+        />
+      </a>
+      <div>
+        <a href="/profile" class="nav-link text-white">
+          <p class="mb-0 fw-bold">Clint B.</p>
+        </a>
+        <% if (user) { %>
+        <small><%= user.role %></small>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <ul class="nav nav-pills flex-column mb-auto">
+<% if (user.role === 'admin') { %>
+
+      <li class="nav-item">
+        <a href="/admin/complaints" class="nav-link text-white">
+          <i class="bx bx-table me-2"></i> Complaints
+        </a>
+      </li>
+
+      <li>
+        <a href="/users" class="nav-link text-white">
+          <i class="bx bxs-user-detail me-2"></i> Users
+        </a>
+      </li>
+<% } %>
+      <li>
+        <a href="/dashboard" class="nav-link text-white">
+          <i class="bx bxs-dashboard me-2"></i> Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="/logout" class="nav-link text-white">
+          <i class="bx bxs-log-out me-2"></i> Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

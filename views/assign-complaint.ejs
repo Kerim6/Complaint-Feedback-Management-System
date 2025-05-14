@@ -1,0 +1,73 @@
+
+  <h2>Assign Complaint ID: (<%= complaint.id %>)</h2>
+
+  <% if (error) { %>
+    <p style="color:red;"><%= error %></p>
+  <% } %>
+
+  <form action="/admin/complaints/<%= complaint.id %>/assign" method="POST">
+    <label><strong>Activity: </strong><%= complaint.activity %></label><br>
+    <label><strong>Complaint: </strong><%= complaint.complaint %></label><br><br>
+
+    <label>Project</label><br>
+    <select name="project_id" required>
+      <% projects.forEach(project => { %>
+        <option value="<%= project.id %>"><%= project.short_name %></option>
+      <% }) %>
+    </select><br><br>
+
+    <label>Channel</label><br>
+    <select name="channel_id" required>
+      <% channels.forEach(channel => { %>
+        <option value="<%= channel.id %>"><%= channel.name %></option>
+      <% }) %>
+    </select><br><br>
+
+    <label>Assign To:</label><br>
+    <select name="user_id" required>
+      <% users.forEach(u => { %>
+        <option value="<%= u.id %>"><%= u.username %> (<%= u.role %>)</option>
+      <% }) %>
+    </select><br><br>
+
+    <label>Category:</label><br>
+    <select name="category_id" required>
+      <% categories.forEach(cat => { %>
+        <option value="<%= cat.id %>"><%= cat.name %></option>
+      <% }) %>
+    </select><br><br>
+
+    <label>Status:</label><br>
+    <select name="status" id="status">
+        <option value="open">Open</option>
+        <option value="in_progress">In Progress</option>
+        <option value="resolved">Resolved</option>
+        <option value="closed">Closed</option>
+    </select><br><br>
+
+    <label>Follow Up Department:</label><br>
+    <select name="follow_up" id="follow_up">
+        <option value="Programs">Programs</option>
+        <option value="HR">HR</option>
+        <option value="Protection">Protection</option>
+        <option value="Top Management">Top Management</option>
+        <option value="Finance">Finance</option>
+        <option value="Legal">Legal</option>
+        <option value="IT">IT</option>
+        <option value="Admin">Admin</option>
+        <option value="Procurement">Procurement</option>
+        <option value="Media">Media</option>
+        <option value="Security">Security</option>
+        <option value="Other">Other</option>
+    </select><br><br>
+
+
+    <label>Mark as Sensitive:</label><br>
+    <select name="sensitive">
+      <option value="">No</option>
+      <option value="yes">Yes</option>
+    </select><br><br>
+
+    <button type="submit">Assign</button>
+  </form>
+

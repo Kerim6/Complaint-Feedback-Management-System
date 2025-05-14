@@ -1,0 +1,116 @@
+<h2>All Complaints</h2>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <tr>
+    <th>Complaint ID</th>
+    <th>Tracking ID</th>
+    <th>Received At</th>
+    <th>Name</th>
+    <th>Gender</th>
+    <th>Age</th>
+    <th>Phone</th>
+    <th>Email</th>
+    <th>Governorate</th>
+    <th>District</th>
+    <th>Sub-District</th>
+    <th>Community</th>
+    <th>Village / Camp / Facility</th>
+    <th>Project Short Name</th>
+    <th>Project Donor</th>
+    <th>Project code</th>
+    <th>Project Sector</th>
+    <th>Category</th>
+    <th>Sensitive</th>
+    <th>Refferal Date</th>
+    <th>Follow up Department</th>
+    <th>Status</th>
+    <th>Channel</th>
+    <th>Activity</th>
+    <th>Complaint Description</th>
+    <th>Response</th>
+    <th>Response Date & Time</th>
+    <th>Assigned To</th>
+    <th>Referral Status</th>
+    <th>Attachment</th>
+  </tr>
+  <% complaints.forEach(c => { %>
+  <tr>
+    <td><a href="/complaints/<%= c.id %>"><%= c.id %></a></td>
+    <td><%= c.tracking_id %></td>
+    <td>
+      <%= new Date(c.created_at).toLocaleString('en-US', { timeZone:
+      'Asia/Damascus', year: 'numeric', month: 'short', day: '2-digit', hour:
+      '2-digit', minute: '2-digit' }) %>
+    </td>
+    <td><%= c.name %></td>
+    <td><%= c.gender || 'N/A'%></td>
+    <td><%= c.age || 'N/A' %></td>
+    <td><%= c.phone || 'N/A' %></td>
+    <td><%= c.email || 'N/A' %></td>
+    <td><%= c.governorate || 'N/A' %></td>
+    <td><%= c.district || 'N/A' %></td>
+    <td><%= c.sub_district || 'N/A' %></td>
+    <td><%= c.community || 'N/A' %></td>
+    <td><%= c.village_camp_facility || 'N/A' %></td>
+    <td><%= c.project_short_name || 'N/A' %></td>
+    <td><%= c.project_donor || 'N/A' %></td>
+    <td><%= c.project_code || 'N/A' %></td>
+    <td><%= c.project_sector || 'N/A' %></td>
+    <td><%= c.category || 'N/A' %></td>
+    <td><%= c.sensitive ? 'Yes' : 'No' %></td>
+<td>
+  <% if (c.referral_date) { %>
+    <%= new Date(c.referral_date).toLocaleString('en-US', {
+      timeZone: 'Asia/Damascus',
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    }) %>
+  <% } else { %>
+    N/A
+  <% } %>
+</td>
+
+    <td><%= c.follow_up || 'N/A' %></td>
+    <td><%= c.status || 'N/A' %></td>
+    <td><%= c.channel || 'N/A' %></td>
+    <td><%= c.activity || 'N/A' %></td>
+    <td><%= c.complaint || 'N/A' %></td>
+    <td><%= c.response || 'N/A' %></td>
+        <td>
+  <% if (c.response_date) { %>
+    <%= new Date(c.response_date).toLocaleString('en-US', {
+      timeZone: 'Asia/Damascus',
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    }) %>
+  <% } else { %>
+    N/A
+  <% } %>
+</td>
+
+    <td><%= c.assigned_to || '—' %></td>
+    <td>
+      <% if (!c.assigned_to) { %>
+      <form action="/admin/complaints/<%= c.id %>/assign" method="GET">
+        <button>Assign</button>
+      </form>
+      <% } else { %>
+      <span style="color: gray">Already Assigned</span>
+      <% } %>
+    </td>
+    <td>
+      <% if (c.attachment) { %>
+      <a href="/uploads/<%= c.attachment %>" target="_blank">View</a>
+      <% } else { %>
+      <span style="color: gray">No Attachment</span>
+      <% } %>
+    </td>
+  </tr>
+  <% }) %>
+</table>

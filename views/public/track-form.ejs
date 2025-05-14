@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tracking Feedback</title>
+  </head>
+  <body>
+    <h2>Track Your Complaint</h2>
+
+    <form method="POST" action="/track">
+      <label for="tracking_id">Enter Tracking ID:</label>
+      <input type="text" name="tracking_id" required />
+      <button type="submit">Check Status</button>
+    </form>
+
+    <% if (error) { %>
+    <p style="color: red"><%= error %></p>
+    <% } %> <% if (complaint) { %>
+    <h3>Complaint Details</h3>
+    <ul>
+      <li><strong>Name:</strong> <%= complaint.name %></li>
+      <li><strong>Phone:</strong> <%= complaint.phone %></li>
+      <li>
+        <strong>Submitted On:</strong> <%= complaint.created_at.toDateString()
+        %>
+      </li>
+      <li>
+        <strong>Status:</strong> <%= complaint.status || 'Not yet processed' %>
+      </li>
+      <li><strong>Follow-up:</strong> <%= complaint.follow_up || 'N/A' %></li>
+      <li><strong>Sensitive:</strong> <%= complaint.sensitive || 'No' %></li>
+      <li>
+        <strong>Assigned to:</strong> <%= complaint.assigned_to || 'Not assigned yet' %>
+      </li>
+      <% if (complaint.response_text) { %>
+      <li><strong>Response:</strong> <%= complaint.response_text %></li>
+      <li>
+        <strong>Responded On:</strong> <%=
+        complaint.response_date.toDateString() %>
+      </li>
+      <% } else { %>
+      <li><strong>Response:</strong> Not yet responded</li>
+      <% } %>
+    </ul>
+    <% } %>
+    <button onclick="window.print()">🖨️ Print Confirmation</button>
+  </body>
+</html>

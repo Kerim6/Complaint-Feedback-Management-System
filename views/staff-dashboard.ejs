@@ -1,0 +1,90 @@
+<h3>Your Assigned Complaints</h3>
+
+<% if (complaints.length === 0) { %>
+<p>No complaints assigned to you yet.</p>
+<% } else { %>
+<table border="1" cellpadding="5" cellspacing="0">
+  <tr>
+    <th>ID</th>
+    <th>Received At</th>
+    <th>Governorate</th>
+    <th>District</th>
+    <th>Sub-District</th>
+    <th>Community</th>
+    <th>Village / Camp / Facility</th>
+    <th>Project Short Name</th>
+    <th>Project Donor</th>
+    <th>Project code</th>
+    <th>Project Sector</th>
+    <th>Category</th>
+    <th>Sensitive</th>
+    <th>Refferal Date</th>
+    <th>Follow up Department</th>
+    <th>Activity</th>
+    <th>Complaint Description</th>
+    <th>Response</th>
+    <th>Response Date</th>
+  </tr>
+  <% complaints.forEach(c => { %>
+  <tr>
+    <td><a href="/complaint/<%= c.id %>"><%= c.id %></a></td>
+
+    <td>
+      <% if (c.created_at) { %> <%= new
+      Date(c.created_at).toLocaleString('en-US', { timeZone: 'Asia/Damascus',
+      year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute:
+      '2-digit' }) %> <% } else { %> N/A <% } %>
+    </td>
+
+    <td><%= c.governorate %></td>
+    <td><%= c.district %></td>
+    <td><%= c.sub_district || '—' %></td>
+    <td><%= c.community || '—' %></td>
+    <td><%= c.village_camp_facility || '—' %></td>
+    <td><%= c.project_short_name || '—' %></td>
+    <td><%= c.project_donor || '—' %></td>
+    <td><%= c.project_code || '—' %></td>
+    <td><%= c.project_sector || '—' %></td>
+    <td><%= c.category || '—' %></td>
+    <td><%= c.sensitive %></td>
+    <td>
+      <% if (c.referral_date) { %> <%= new
+      Date(c.referral_date).toLocaleString('en-US', { timeZone: 'Asia/Damascus',
+      year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute:
+      '2-digit' }) %> <% } else { %> N/A <% } %>
+    </td>
+    <td><%= c.follow_up || '—' %></td>
+    <td><%= c.activity || '—' %></td>
+    <td><%= c.complaint || '—' %></td>
+
+    <td>
+      <% if (c.response_text) { %>
+        <strong>Your Submitted Response:</strong><br>
+        <div style="padding: 0.5rem; background: #f5f5f5; border: 1px solid #ccc;">
+          <%= c.response_text %>
+        </div>
+      <% } else { %>
+        <form action="/respond" method="POST">
+          <input type="hidden" name="complaint_id" value="<%= c.id %>" />
+          <textarea
+            name="response_text"
+            required
+            placeholder="Enter your response"
+            rows="2"
+            cols="60"
+          ></textarea><br />
+          <button type="submit">Submit Response</button>
+        </form>
+      <% } %>
+    </td>
+
+    <td>
+      <% if (c.response_date) { %> <%= new
+      Date(c.response_date).toLocaleString('en-US', { timeZone: 'Asia/Damascus',
+      year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute:
+      '2-digit' }) %> <% } else { %> N/A <% } %>
+    </td>
+  </tr>
+  <% }) %>
+</table>
+<% } %>
