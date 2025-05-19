@@ -5,7 +5,7 @@
     <p style="color:red;"><%= error %></p>
   <% } %>
 
-  <form action="/admin/complaints/<%= complaint.id %>/assign" method="POST">
+  <form action="/complaints/<%= complaint.id %>/assign" method="POST">
     <label><strong>Activity: </strong><%= complaint.activity %></label><br>
     <label><strong>Complaint: </strong><%= complaint.complaint %></label><br><br>
 

@@ -14,9 +14,108 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/styles/layout.css" />
+    <style>
+      .notification-bell {
+        position: fixed;
+        top: 15px;
+        right: 30px;
+        z-index: 9999;
+        cursor: pointer;
+        background: transparent;
+        padding: 5px;
+        border-radius: 50%;
+        transition: background-color 0.3s;
+      }
+      .notification-bell:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: red;
+        color: white;
+        border-radius: 50%;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        display: none;
+        min-width: 18px;
+        height: 18px;
+        text-align: center;
+        line-height: 18px;
+        padding: 0;
+      }
+      .notifications-dropdown {
+        position: fixed;
+        top: 60px;
+        right: 20px;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 0;
+        max-height: 400px;
+        width: 300px;
+        overflow-y: auto;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: none;
+        z-index: 9999;
+      }
+      .notification-item {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.2s;
+      }
+      .notification-item:hover {
+        background-color: #f8f9fa;
+      }
+      .notification-item.unread {
+        background-color: #f0f7ff;
+      }
+      .notification-item:last-child {
+        border-bottom: none;
+      }
+      .notification-item a {
+        color: #333;
+        text-decoration: none;
+        display: block;
+      }
+      .no-notifications {
+        padding: 15px;
+        text-align: center;
+        color: #666;
+      }
+      .notification-header {
+        padding: 12px 15px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #eee;
+        font-weight: bold;
+        border-radius: 8px 8px 0 0;
+      }
+      .bell-icon {
+        color: white;
+        font-size: 24px;
+      }
+    </style>
   </head>
   <body>
-    <%- include('partials/header') %> <%- include('partials/sidebar') %>
+    <!-- Add notification bell in header -->
+    <div class="notification-bell">
+      <i class="bx bx-bell bell-icon"></i>
+      <span class="notification-badge">0</span>
+    </div>
+    
+    <!-- Notifications dropdown -->
+    <div class="notifications-dropdown">
+      <div class="notification-header">
+        Notifications
+      </div>
+      <div class="notifications-content">
+        <!-- Notifications will be inserted here -->
+      </div>
+    </div>
+
+    <%- include('partials/header') %> 
+    <%- include('partials/sidebar') %>
 
     <div class="main">
       <div class="container-fluid"><%- include(body) %></div>
@@ -24,4 +123,103 @@
 
     <%- include('partials/footer') %>
   </body>
+  <script>
+  let lastNotificationCount = 0;
+  const bell = document.querySelector('.notification-bell');
+  const badge = document.querySelector('.notification-badge');
+  const dropdown = document.querySelector('.notifications-dropdown');
+  let isDropdownVisible = false;
+
+  // Toggle dropdown when clicking the bell
+  bell.addEventListener('click', (e) => {
+    e.stopPropagation();
+    isDropdownVisible = !isDropdownVisible;
+    dropdown.style.display = isDropdownVisible ? 'block' : 'none';
+    if (isDropdownVisible) {
+      bell.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+    } else {
+      bell.style.backgroundColor = 'transparent';
+    }
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target) && !bell.contains(e.target)) {
+      isDropdownVisible = false;
+      dropdown.style.display = 'none';
+      bell.style.backgroundColor = 'transparent';
+    }
+  });
+
+  async function loadNotifications() {
+    try {
+      const res = await fetch('/api/notifications');
+      if (!res.ok) throw new Error('Failed to fetch notifications');
+      
+      const notifications = await res.json();
+      const content = document.querySelector('.notifications-content');
+      
+      // Update badge
+      const unreadCount = notifications.filter(n => !n.is_read).length;
+      badge.textContent = unreadCount;
+      badge.style.display = unreadCount > 0 ? 'block' : 'none';
+      
+      // Update dropdown content
+      if (notifications.length === 0) {
+        content.innerHTML = '<div class="no-notifications">No notifications</div>';
+      } else {
+        content.innerHTML = notifications.map(n => `
+          <div class="notification-item ${!n.is_read ? 'unread' : ''}" data-id="${n.id}">
+            <a href="${n.link}" onclick="markAsRead(${n.id})">
+              ${n.message}
+              ${!n.is_read ? '<span style="color: blue; float: right;">•</span>' : ''}
+            </a>
+          </div>
+        `).join('');
+      }
+      
+      // Animate bell if new notifications
+      if (unreadCount > lastNotificationCount) {
+        bell.style.animation = 'shake 0.5s';
+        setTimeout(() => bell.style.animation = '', 500);
+      }
+      
+      lastNotificationCount = unreadCount;
+    } catch (err) {
+      console.error('Error loading notifications:', err);
+    }
+  }
+
+  async function markAsRead(notificationId) {
+    try {
+      const res = await fetch(`/api/notifications/read/${notificationId}`, {
+        method: 'POST'
+      });
+      if (!res.ok) throw new Error('Failed to mark notification as read');
+      
+      // Refresh notifications
+      loadNotifications();
+    } catch (err) {
+      console.error('Error marking notification as read:', err);
+    }
+  }
+
+  // Add bell animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes shake {
+      0% { transform: rotate(0); }
+      25% { transform: rotate(10deg); }
+      50% { transform: rotate(0); }
+      75% { transform: rotate(-10deg); }
+      100% { transform: rotate(0); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Load immediately and then poll every 30 seconds
+  loadNotifications();
+  setInterval(loadNotifications, 30000);
+</script>
+
 </html>

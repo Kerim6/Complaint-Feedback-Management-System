@@ -1,0 +1,85 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">My Profile</h4>
+        </div>
+        <div class="card-body">
+          <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <%= error %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+
+          <% if (typeof success !== 'undefined' && success) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <%= success %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+
+          <form action="/profile" method="POST">
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" 
+                     value="<%= user.username %>" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" 
+                     value="<%= user.email %>" readonly>
+            </div>
+
+            <div class="mb-3">
+              <label for="role" class="form-label">Role</label>
+              <input type="text" class="form-control" value="<%= user.role %>" readonly>
+            </div>
+
+            <div class="mb-3">
+              <label for="created_at" class="form-label">Member Since</label>
+              <input type="text" class="form-control" 
+                     value="<%= new Date(user.created_at).toLocaleDateString() %>" readonly>
+            </div>
+
+            <hr>
+            <h5>Change Password</h5>
+            <div class="mb-3">
+              <label for="current_password" class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="current_password" 
+                     name="current_password">
+            </div>
+
+            <div class="mb-3">
+              <label for="new_password" class="form-label">New Password</label>
+              <input type="password" class="form-control" id="new_password" 
+                     name="new_password">
+              <div class="form-text">
+                Leave blank if you don't want to change your password
+              </div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">Update Profile</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Auto-dismiss alerts after 5 seconds
+  document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      setTimeout(() => {
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+      }, 5000);
+    });
+  });
+</script> 

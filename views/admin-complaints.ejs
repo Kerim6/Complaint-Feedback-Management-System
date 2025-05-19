@@ -97,7 +97,7 @@
     <td><%= c.assigned_to || '—' %></td>
     <td>
       <% if (!c.assigned_to) { %>
-      <form action="/admin/complaints/<%= c.id %>/assign" method="GET">
+      <form action="/complaints/<%= c.id %>/assign" method="GET">
         <button>Assign</button>
       </form>
       <% } else { %>

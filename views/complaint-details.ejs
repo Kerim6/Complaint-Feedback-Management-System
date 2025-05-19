@@ -27,6 +27,15 @@
   <p><strong>Status:</strong> <%= assignment.status %></p>
 <% } else { %>
   <p>No assignment yet.</p>
+  <td>
+    <% if (!complaint.assigned_to) { %>
+    <form action="/complaints/<%= complaint.id %>/assign" method="GET">
+      <button>Assign</button>
+    </form>
+    <% } else { %>
+    <span style="color: gray">Already Assigned</span>
+    <% } %>
+  </td>
 <% } %>
 
 <hr>
@@ -38,4 +47,4 @@
   <p>No response submitted.</p>
 <% } %>
 
-<a href="/admin/complaints">Back to Dashboard</a>
+<a href="/complaints">Back to Dashboard</a>

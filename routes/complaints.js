@@ -1,14 +1,17 @@
 import express from "express";
 import { pool } from "../db/index.js";
 import bcrypt from "bcrypt";
-import { requireLogin, requireAdmin, addWorkingDays } from "../middleware/auth.js";
-
+import {
+  requireLogin,
+  requireAdmin,
+  addWorkingDays,
+} from "../middleware/auth.js";
 
 const router = express.Router();
 
 // View all complaints (admin only)
 router.get(
-  "/admin/complaints",
+  "/complaints",
   requireLogin,
   requireAdmin,
   async (req, res) => {
@@ -41,7 +44,7 @@ router.get(
       c.activity,
       c.complaint,
       r.response_text AS response,
-      r.created_at AS response_date,
+      r.response_date AS response_date,
       a.referral_date AS referral_date
     FROM complaints c
     LEFT JOIN responses r ON c.id = r.complaint_id
@@ -70,7 +73,7 @@ router.get(
 
 // Show form to assign a complaint (admin only)
 router.get(
-  "/admin/complaints/:id/assign",
+  "/complaints/:id/assign",
   requireLogin,
   requireAdmin,
   async (req, res) => {
@@ -89,7 +92,7 @@ router.get(
 
     // Get users for assignment
     const users = await pool.query(
-      "SELECT id, username, role FROM users WHERE role IN ('staff', 'manager') ORDER BY role, username"
+      "SELECT id, username, role FROM users WHERE role IN ('staff', 'manager', 'admin') ORDER BY role, username"
     );
 
     // Get projects for assignment
@@ -106,6 +109,7 @@ router.get(
     );
 
     const categories = await pool.query("SELECT id, name FROM categories");
+
     res.render("layout", {
       complaintId,
       projects: projects.rows,
@@ -122,22 +126,29 @@ router.get(
 
 // Assign the complaint
 router.post(
-  "/admin/complaints/:id/assign",
+  "/complaints/:id/assign",
   requireLogin,
   requireAdmin,
   async (req, res) => {
     const complaintId = req.params.id;
-    const { user_id, project_id, channel_id, category_id, follow_up, status, sensitive } = req.body;
+    const {
+      user_id,
+      project_id,
+      channel_id,
+      category_id,
+      follow_up,
+      status,
+      sensitive,
+    } = req.body;
 
     // Get working_days_limit from categories table
-    const {rows: categoriesRows} = await pool.query(
+    const { rows: categoriesRows } = await pool.query(
       "SELECT working_days_limit FROM categories WHERE id = $1",
       [category_id]
     );
-    const workingDaysLimit = categoriesRows[0].working_days_limit || 5; 
+    const workingDaysLimit = categoriesRows[0].working_days_limit || 5;
     const referralDate = new Date();
     const dueDate = addWorkingDays(referralDate, workingDaysLimit);
-
 
     try {
       await pool.query(
@@ -145,10 +156,33 @@ router.post(
         INSERT INTO assignments (complaint_id, user_id, project_id, channel_id, category_id, referral_date, due_date, follow_up, status, sensitive)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       `,
-        [complaintId, user_id, project_id, channel_id, category_id, referralDate, dueDate, follow_up, status, sensitive]
+        [
+          complaintId,
+          user_id,
+          project_id,
+          channel_id,
+          category_id,
+          referralDate,
+          dueDate,
+          follow_up,
+          status,
+          sensitive,
+        ]
       );
 
-      res.redirect("/admin/complaints");
+      res.redirect("/complaints");
+
+    // adding notification when assignment
+    await pool.query(
+      `INSERT INTO notifications (user_id, message, link)
+   VALUES ($1, $2, $3)`,
+      [
+        user_id,
+        `You have been assigned a new complaint (ID: ${complaintId})`,
+        `/complaint/${complaintId}`, // or wherever the complaint view is
+      ]
+    );
+
     } catch (err) {
       console.error(err);
       res.render("layout", {

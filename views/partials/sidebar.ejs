@@ -15,51 +15,65 @@
 
     <!-- User Info -->
     <div class="d-flex align-items-center mb-4">
-      <a href="/profile">
-        <img
-          src="/src/images.jpg"
-          alt="user"
-          class="rounded-circle me-3"
-          width="50"
-          height="50"
-        />
-      </a>
-      <div>
-        <a href="/profile" class="nav-link text-white">
-          <p class="mb-0 fw-bold">Clint B.</p>
+      <% if (user) { %>
+        <a href="/profile">
+          <img
+            src="/src/images.jpg"
+            alt="user"
+            class="rounded-circle me-3"
+            width="50"
+            height="50"
+          />
         </a>
-        <% if (user) { %>
-        <small><%= user.role %></small>
-        <% } %>
-      </div>
+        <div>
+          <a href="/profile" class="nav-link text-white">
+            <p class="mb-0 fw-bold"><%= user.username %></p>
+          </a>
+          <small><%= user.role %></small>
+        </div>
+      <% } else { %>
+        <div>
+          <a href="/" class="nav-link text-white">
+            <p class="mb-0">Please log in</p>
+          </a>
+        </div>
+      <% } %>
     </div>
 
     <!-- Navigation -->
     <ul class="nav nav-pills flex-column mb-auto">
-<% if (user.role === 'admin') { %>
+      <% if (user && user.role === 'admin') { %>
+        <li class="nav-item">
+          <a href="/complaints" class="nav-link text-white">
+            <i class="bx bx-table me-2"></i> Complaints
+          </a>
+        </li>
 
-      <li class="nav-item">
-        <a href="/admin/complaints" class="nav-link text-white">
-          <i class="bx bx-table me-2"></i> Complaints
-        </a>
-      </li>
+        <li>
+          <a href="/users" class="nav-link text-white">
+            <i class="bx bxs-user-detail me-2"></i> Users
+          </a>
+        </li>
+      <% } %>
 
-      <li>
-        <a href="/users" class="nav-link text-white">
-          <i class="bx bxs-user-detail me-2"></i> Users
-        </a>
-      </li>
-<% } %>
-      <li>
-        <a href="/dashboard" class="nav-link text-white">
-          <i class="bx bxs-dashboard me-2"></i> Dashboard
-        </a>
-      </li>
-      <li>
-        <a href="/logout" class="nav-link text-white">
-          <i class="bx bxs-log-out me-2"></i> Logout
-        </a>
-      </li>
+      <% if (user) { %>
+        <li>
+          <a href="/dashboard" class="nav-link text-white">
+            <i class="bx bxs-dashboard me-2"></i> Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="/logout" class="nav-link text-white">
+            <i class="bx bxs-log-out me-2"></i> Logout
+          </a>
+        </li>
+      <% } else { %>
+        <li>
+          <a href="/" class="nav-link text-white">
+            <i class="bx bxs-log-in me-2"></i> Login
+          </a>
+        </li>
+      <% } %>
     </ul>
   </div>
 </div>

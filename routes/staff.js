@@ -52,7 +52,7 @@ router.get("/dashboard", requireLogin, requireStaff, async (req, res) => {
     return res.status(404).send("Complaint not found");
   }
 
-  console.log(complaints.rows);
+  
   res.render("layout", {
     complaints: complaints.rows,
     session: req.session,

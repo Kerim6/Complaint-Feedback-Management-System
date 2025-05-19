@@ -12,6 +12,7 @@ import complaintRoutes from './routes/complaints.js';
 import staffRoutes from './routes/staff.js';
 import adminRoutes from './routes/admin.js';
 import publicRoutes from './routes/public.js';
+import notificationRoutes from './routes/notifications.js';
 
 
 dotenv.config();
@@ -42,12 +43,14 @@ app.use((req, res, next) => {
 });
 
 // Routes
+app.use('/api/notifications', notificationRoutes);
 app.use('/', authRoutes);
 app.use('/', userRoutes);
 app.use('/', complaintRoutes);
 app.use('/', staffRoutes);
 app.use('/', adminRoutes);
 app.use('/', publicRoutes);
+
   
 
 app.listen(PORT, () => {
